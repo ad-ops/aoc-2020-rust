@@ -1,4 +1,4 @@
-use aoc_2020_rust::Puzzle;
+use aoc_2020_rust::{puzzle_main, Puzzle, puzzle_tests};
 
 fn solver_part1(input: Vec<String>) -> String {
     let parsed: Vec<i32> =  input
@@ -36,33 +36,6 @@ fn solver_part2(input: Vec<String>) -> String {
     solution.to_string()
 }
 
-fn main() {
-    let day = env!("CARGO_BIN_NAME");
-    println!("Advent of Code 2020 - {}", day);
-    let puzzle = Puzzle::new(day);
-    let solution_part1 = puzzle.solve(solver_part1);
-    println!("{} - Part 1 Solution:", day);
-    println!("{}", solution_part1);
-    let solution_part2 = puzzle.solve(solver_part2);
-    println!("{} - Part 2 Solution:", day);
-    println!("{}", solution_part2);
-}
+puzzle_main!(solver_part1, solver_part2);
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn puzzle_part1_test() {
-        let day = env!("CARGO_BIN_NAME");
-        let puzzle = Puzzle::new(day);
-        assert_eq!(puzzle.test(solver_part1), "514579".to_string());
-    }
-    
-    #[test]
-    fn puzzle_part2_test() {
-        let day = env!("CARGO_BIN_NAME");
-        let puzzle = Puzzle::new(day);
-        assert_eq!(puzzle.test(solver_part2), "241861950".to_string());
-    }
-}
+puzzle_tests!("514579", "241861950");

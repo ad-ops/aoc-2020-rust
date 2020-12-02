@@ -45,6 +45,48 @@ pub fn get_input(day: DayInput) -> Vec<String> {
     lines
 }
 
+#[macro_export]
+macro_rules! puzzle_main {
+    ($solver_part1:expr, $solver_part2:expr) => {
+        fn main() {
+            let day = env!("CARGO_BIN_NAME");
+            println!("Advent of Code 2020 - {}", day);
+            let puzzle = Puzzle::new(day);
+            let solution_part1 = puzzle.solve($solver_part1);
+            println!("{} - Part 1 Solution:", day);
+            println!("{}", solution_part1);
+            let solution_part2 = puzzle.solve($solver_part2);
+            println!("{} - Part 2 Solution:", day);
+            println!("{}", solution_part2);
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! puzzle_tests {
+    ($expected_part1:expr, $expected_part2:expr) => {
+        #[cfg(test)]
+        mod test {
+            use super::*;
+
+            #[test]
+            fn puzzle_part1_test() {
+                let day = env!("CARGO_BIN_NAME");
+                let puzzle = Puzzle::new(day);
+                assert_eq!(puzzle.test(solver_part1), $expected_part1);
+            }
+
+            #[test]
+            fn puzzle_part2_test() {
+                let day = env!("CARGO_BIN_NAME");
+                let puzzle = Puzzle::new(day);
+                assert_eq!(puzzle.test(solver_part2), $expected_part2);
+            }
+        }
+    };
+}
+
+
 #[cfg(test)]
 mod test {
     use super::*;
