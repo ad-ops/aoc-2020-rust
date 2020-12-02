@@ -9,8 +9,13 @@ Would have been cool if it was possible to just swap the solvers dynamically. We
 ## Setup
 New puzzles can use the template of `bin/day0.rs` and change the solvers and test cases. Also `input/day%d_(input|test).txt` needs to be added with the input data provided by Advent of Code.
 
-## Test
+### Test
 `cargo test --bin day0`
 
-## Run
+### Run
 `cargo run --bin day0`
+
+
+## Lessons Learned
+### Day 1
+- Can break outer loops.
