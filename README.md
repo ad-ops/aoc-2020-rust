@@ -18,7 +18,8 @@ New puzzles can use the template of `bin/day0.rs` and change the solvers and tes
 
 ## Lessons Learned
 ### Day 1
-- Can break outer loops.
+- Can label and break outer loops.
 
 ### Day 2
 - Macros to reduce code.
+- `parse_display` crate for parsing a string into a struct.
