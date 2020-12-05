@@ -26,3 +26,7 @@ New puzzles can use the template of `bin/day0.rs` and change the solvers and tes
 
 ### Day 3
 - Should have used a for-loop to make it easier to swap stepping numbers.
+
+### Day 4
+- `inspect`-method to print-debug inside iterator.
+- 
