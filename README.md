@@ -23,3 +23,6 @@ New puzzles can use the template of `bin/day0.rs` and change the solvers and tes
 ### Day 2
 - Macros to reduce code.
 - `parse_display` crate for parsing a string into a struct.
+
+### Day 3
+- Should have used a for-loop to make it easier to swap stepping numbers.
