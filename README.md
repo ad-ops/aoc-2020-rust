@@ -29,4 +29,6 @@ New puzzles can use the template of `bin/day0.rs` and change the solvers and tes
 
 ### Day 4
 - `inspect`-method to print-debug inside iterator.
-- 
+
+### Day 5
+- Binary numbers in Rust
