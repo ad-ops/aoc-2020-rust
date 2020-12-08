@@ -66,7 +66,7 @@ macro_rules! puzzle_main {
 macro_rules! puzzle_tests {
     ($expected_part1:expr, $expected_part2:expr) => {
         #[cfg(test)]
-        mod test {
+        mod aoc_test {
             use super::*;
 
             #[test]
