@@ -35,3 +35,10 @@ New puzzles can use the template of `bin/day0.rs` and change the solvers and tes
 
 ### Day 6
 - `HashMap` / `HashSet` and internal iterators.
+
+### Day 7
+
+### Day 8
+- Error transformation and handling.
+- FromStr-trait and parse-method.
+- Ugly brute force sometimes works fine (in ms span for this task).

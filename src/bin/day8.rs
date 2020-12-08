@@ -14,11 +14,11 @@ pub enum Error {
     MissingWhitespace,
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Copy, Clone)]
 enum Instruction {
     Accumulator(i32),
     Jump(i32),
-    NoOp,
+    NoOp(i32),
 }
 impl FromStr for Instruction {
     type Err = Error;
@@ -28,15 +28,15 @@ impl FromStr for Instruction {
         match operation {
             "acc" => Ok(Instruction::Accumulator(argument)),
             "jmp" => Ok(Instruction::Jump(argument)),
-            "nop" => Ok(Instruction::NoOp),
+            "nop" => Ok(Instruction::NoOp(argument)),
             _ => Err(Error::UnknownOperation),
         }
     }
 }
 
-fn accumulate(count: i32, index: usize, instructions: &Vec<Instruction>, executions: &mut HashSet<usize>) -> i32 {
+fn accumulate(count: i32, index: usize, instructions: &Vec<Instruction>, executions: &mut HashSet<usize>) -> (i32, bool) {
     if executions.contains(&index) {
-        return count;
+        return (count, false);
     }
     let mut count = count;
     let instruction = &instructions[index];
@@ -46,12 +46,61 @@ fn accumulate(count: i32, index: usize, instructions: &Vec<Instruction>, executi
             index as i32 + 1
         },
         Instruction::Jump(arg) => index as i32 + arg,
-        Instruction::NoOp => index as i32 + 1,
+        Instruction::NoOp(_) => index as i32 + 1,
     };
     let next_instruction_index = (next_instruction_index % instructions.len() as i32 ) as usize;
     executions.insert(index);
-    // println!("{}, {}, {}, {:?}, {:?}", count, index, next_instruction_index, instruction, executions);
+
+    let final_terminating_instruction = match instruction {
+        Instruction::Accumulator(_) => true,
+        Instruction::Jump(1) => true,
+        Instruction::Jump(_) => false,
+        Instruction::NoOp(_) => true,
+    };
+    if index + 1 == instructions.len() && final_terminating_instruction {
+        return (count, true);
+    }
+
     accumulate(count, next_instruction_index, instructions, executions)
+}
+
+fn accumulate_with_fix(count: i32, index: usize, fix_index: usize, instructions: &Vec<Instruction>, executions: &mut HashSet<usize>) -> (i32, bool) {
+    if executions.contains(&index) {
+        return (count, false);
+    }
+    let mut count = count;
+    let instruction = if index == fix_index {
+        match instructions[index] {
+            Instruction::Accumulator(a) => Instruction::Accumulator(a),
+            Instruction::Jump(a) => Instruction::NoOp(a),
+            Instruction::NoOp(a) => Instruction::Jump(a),
+        }
+    }
+    else {
+        instructions[index]
+    };
+    let next_instruction_index = match instruction {
+        Instruction::Accumulator(arg) => {
+            count += arg;
+            index as i32 + 1
+        },
+        Instruction::Jump(arg) => index as i32 + arg,
+        Instruction::NoOp(_) => index as i32 + 1,
+    };
+    let next_instruction_index = (next_instruction_index % instructions.len() as i32 ) as usize;
+    executions.insert(index);
+
+    let final_terminating_instruction = match instruction {
+        Instruction::Accumulator(_) => true,
+        Instruction::Jump(1) => true,
+        Instruction::Jump(_) => false,
+        Instruction::NoOp(_) => true,
+    };
+    if index + 1 == instructions.len() && final_terminating_instruction {
+        return (count, true);
+    }
+
+    accumulate_with_fix(count, next_instruction_index, fix_index, instructions, executions)
 }
 
 fn solver_part1(input: Vec<String>) -> String {
@@ -60,17 +109,25 @@ fn solver_part1(input: Vec<String>) -> String {
         .filter_map(|l| l.parse::<Instruction>().ok())
         .collect();
     let mut executions = HashSet::new();
-    let solution = accumulate(0, 0, &instructions, &mut executions);
+    let (solution, _) = accumulate(0, 0, &instructions, &mut executions);
     
     solution.to_string()
 }
 
 fn solver_part2(input: Vec<String>) -> String {
-    let solution: i32 = input
-        .into_iter()
-        .filter_map(|l| l.parse::<i32>().ok())
-        .max()
-        .unwrap_or(-1);
+    let instructions: Vec<Instruction>  = input
+        .iter()
+        .filter_map(|l| l.parse::<Instruction>().ok())
+        .collect();
+    let mut solution = -1;
+    for (index, _) in instructions.iter().enumerate() {
+        let mut executions = HashSet::new();
+        let (count, terminated) = accumulate_with_fix(0, 0, index, &instructions, &mut executions);
+        if terminated {
+            solution = count;
+            break;
+        }
+    }
     solution.to_string()
 }
 
@@ -86,7 +143,7 @@ mod test {
     fn instruction_from() {
         assert_eq!(Ok(Instruction::Jump(5)), "jmp +5".parse::<Instruction>());
         assert_eq!(Ok(Instruction::Jump(-5)), "jmp -5".parse::<Instruction>());
-        assert_eq!(Ok(Instruction::NoOp), "nop +5".parse::<Instruction>());
+        assert_eq!(Ok(Instruction::NoOp(5)), "nop +5".parse::<Instruction>());
         assert_eq!(Ok(Instruction::Accumulator(-5)), "acc -5".parse::<Instruction>());
     }
 
@@ -98,7 +155,7 @@ mod test {
     }
 
     #[test]
-    fn accumulate_test() {
+    fn accumulate_corrupt() {
         let instructions = vec![
             Instruction::Jump(3),
             Instruction::Accumulator(2), 
@@ -108,6 +165,48 @@ mod test {
         ];
         let mut executions = HashSet::new();
         
-        assert_eq!(5, accumulate(0, 0, &instructions, &mut executions));
+        assert_eq!((5, false), accumulate(0, 0, &instructions, &mut executions));
+    }
+
+    #[test]
+    fn accumulate_terminated() {
+        let instructions = vec![
+            Instruction::Jump(3),
+            Instruction::Accumulator(2), 
+            Instruction::Accumulator(3), 
+            Instruction::NoOp(5),
+            Instruction::Accumulator(10),
+        ];
+        let mut executions = HashSet::new();
+        
+        assert_eq!((10, true), accumulate(0, 0, &instructions, &mut executions));
+    }
+
+    #[test]
+    fn accumulate_with_fix_corrupt() {
+        let instructions = vec![
+            Instruction::Jump(3),
+            Instruction::Accumulator(2), 
+            Instruction::Accumulator(3), 
+            Instruction::Jump(-2),
+            Instruction::Accumulator(10),
+        ];
+        let mut executions = HashSet::new();
+        
+        assert_eq!((5, false), accumulate_with_fix(0, 0, 0, &instructions, &mut executions));
+    }
+
+    #[test]
+    fn accumulate_with_fix_terminated() {
+        let instructions = vec![
+            Instruction::Jump(3),
+            Instruction::Accumulator(2), 
+            Instruction::Accumulator(3), 
+            Instruction::Jump(-2),
+            Instruction::Accumulator(10),
+        ];
+        let mut executions = HashSet::new();
+        
+        assert_eq!((10, true), accumulate_with_fix(0, 0, 3, &instructions, &mut executions));
     }
 }
