@@ -1,3 +1,4 @@
+use std::time::Instant;
 
 pub struct Puzzle<'a> {
     day: &'a str,
@@ -52,11 +53,15 @@ macro_rules! puzzle_main {
             let day = env!("CARGO_BIN_NAME");
             println!("Advent of Code 2020 - {}", day);
             let puzzle = Puzzle::new(day);
+            let part1_start = std::time::Instant::now();
             let solution_part1 = puzzle.solve($solver_part1);
-            println!("{} - Part 1 Solution:", day);
-            println!("{}", solution_part1);
+            let part1_time = part1_start.elapsed().as_micros();
+            let part2_start = std::time::Instant::now();
             let solution_part2 = puzzle.solve($solver_part2);
-            println!("{} - Part 2 Solution:", day);
+            let part2_time = part2_start.elapsed().as_micros();
+            println!("{} - Part 1 solution took {}µs", day, part1_time);
+            println!("{}", solution_part1);
+            println!("{} - Part 2 solution took {}µs", day, part2_time);
             println!("{}", solution_part2);
         }
     };
