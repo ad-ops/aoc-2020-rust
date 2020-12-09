@@ -1,16 +1,7 @@
-use std::time::Instant;
-
 pub struct Puzzle<'a> {
     day: &'a str,
 }
 impl<'a> Puzzle<'a> {
-    // pub fn new(day: u8) -> Self {
-    //     let days = format!("day{}", day);
-    //     Puzzle {
-    //         day: &days[..]
-    //     }
-    // }
-
     pub fn new(day: &'a str) -> Self {
         Puzzle {
             day
