@@ -42,3 +42,6 @@ New puzzles can use the template of `bin/day0.rs` and change the solvers and tes
 - Error transformation and handling.
 - FromStr-trait and parse-method.
 - Ugly brute force sometimes works fine (in ms span for this task).
+
+### Day 9
+- Need more flexible tests / input...
