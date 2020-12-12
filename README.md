@@ -50,3 +50,6 @@ New puzzles can use the template of `bin/day0.rs` and change the solvers and tes
 
 ### Day 10
 - peekable iterators and loop to check next value.
+
+### Day 11
+- Very ugly and repetitive code. Need to refactor...
