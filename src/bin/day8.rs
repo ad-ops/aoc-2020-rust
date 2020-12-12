@@ -34,7 +34,7 @@ impl FromStr for Instruction {
     }
 }
 
-fn accumulate(count: i32, index: usize, instructions: &Vec<Instruction>, executions: &mut HashSet<usize>) -> (i32, bool) {
+fn accumulate(count: i32, index: usize, instructions: &[Instruction], executions: &mut HashSet<usize>) -> (i32, bool) {
     if executions.contains(&index) {
         return (count, false);
     }
@@ -64,7 +64,7 @@ fn accumulate(count: i32, index: usize, instructions: &Vec<Instruction>, executi
     accumulate(count, next_instruction_index, instructions, executions)
 }
 
-fn accumulate_with_fix(count: i32, index: usize, fix_index: usize, instructions: &Vec<Instruction>, executions: &mut HashSet<usize>) -> (i32, bool) {
+fn accumulate_with_fix(count: i32, index: usize, fix_index: usize, instructions: &[Instruction], executions: &mut HashSet<usize>) -> (i32, bool) {
     if executions.contains(&index) {
         return (count, false);
     }

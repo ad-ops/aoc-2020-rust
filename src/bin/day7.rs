@@ -30,7 +30,7 @@ fn contains_gold(color: String, bags: &HashMap<String, HashMap<String, usize>>) 
         }
 
         let mut found = false;
-        for (container, _) in bag {
+        for container in bag.keys() {
             found = found || contains_gold(container.to_string(), &bags);
         }
         return found;
@@ -58,7 +58,7 @@ fn solver_part1(input: Vec<String>) -> String {
 
     let b = &bags;
     let solution = b
-        .into_iter()
+        .iter()
         .filter(|(color, _)| contains_gold((*color).to_string(), &b))
         .count();
 

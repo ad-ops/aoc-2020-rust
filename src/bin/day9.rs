@@ -1,6 +1,6 @@
 use aoc_2020_rust::{puzzle_main, puzzle_tests, Puzzle};
 
-fn invalid_preamble(index: usize, preamble: usize, numbers: &Vec<u64>) -> bool {
+fn invalid_preamble(index: usize, preamble: usize, numbers: &[u64]) -> bool {
     if index >= numbers.len() || preamble >= numbers.len() || preamble > index {
         return false;
     }
@@ -46,8 +46,7 @@ fn solver_part1(input: Vec<String>) -> String {
     let illegal_value: &Option<(usize, &u64)> = &numbers
         .iter()
         .enumerate()
-        .filter(|(i, _)| invalid_preamble(*i, 25, &numbers))
-        .nth(0);
+        .find(|(i, _)| invalid_preamble(*i, 25, &numbers));
     let (_, solution) = illegal_value.unwrap();
     solution.to_string()
 }
@@ -60,8 +59,7 @@ fn solver_part2(input: Vec<String>) -> String {
     let illegal_value: &Option<(usize, &u64)> = &numbers
         .iter()
         .enumerate()
-        .filter(|(i, _)| invalid_preamble(*i, 25, &numbers))
-        .nth(0);
+        .find(|(i, _)| invalid_preamble(*i, 25, &numbers));
     let (index, illegal_number) = illegal_value.unwrap();
     let encyption_weakness: Option<u64> = find_encryption_weakness(*illegal_number, &numbers[0..index]);
     match encyption_weakness {

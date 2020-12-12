@@ -1,8 +1,8 @@
 use aoc_2020_rust::{puzzle_main, puzzle_tests, Puzzle};
 
-fn count_trees(input: &Vec<String>, right: usize, down: usize) -> usize {
+fn count_trees(input: &[String], right: usize, down: usize) -> usize {
     let solution: usize = input
-        .into_iter()
+        .iter()
         .enumerate()
         .skip(1)
         .filter(|(i, _)| i % down == 0)

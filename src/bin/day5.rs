@@ -27,7 +27,7 @@ fn solver_part2(input: Vec<String>) -> String {
         .map(|(r, c)| (r.unwrap(), c.unwrap()))
         .map(|(r, c)| r as u32 * 8 + c as u32)
         .collect();
-        seats.sort();
+        seats.sort_unstable();
 
     let starting_seat_id = seats[0] as usize;
     let (_, neighbour) = seats

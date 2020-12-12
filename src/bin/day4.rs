@@ -16,9 +16,9 @@ struct PassportLax {
 impl PassportLax {
     fn new(s: String) -> Result<Self, parse_display::ParseError> {
         let mut fields: Vec<&str> = s
-            .split(" ")
+            .split(' ')
             .collect();
-        fields.sort();
+        fields.sort_unstable();
         fields
             .join(" ")
             .parse::<PassportLax>()
@@ -40,9 +40,9 @@ struct PassportStrict {
 impl PassportStrict {
     fn new(s: String) -> Result<Self, parse_display::ParseError> {
         let mut fields: Vec<&str> = s
-            .split(" ")
+            .split(' ')
             .collect();
-        fields.sort();
+        fields.sort_unstable();
         fields
             .join(" ")
             .parse::<PassportStrict>()
@@ -55,11 +55,11 @@ impl PassportStrict {
         let height_valid = {
             if self.height.ends_with("cm") {
                 let height = self.height[..3].parse::<u8>().unwrap_or_default();
-                height >= 150 && height <= 193
+                (150..=193).contains(&height)
             }
             else if self.height.ends_with("in") {
                 let height = self.height[..2].parse::<u8>().unwrap_or_default();
-                height >= 59 && height <= 76
+                (59..=76).contains(&height)
             }
             else {
                 false
