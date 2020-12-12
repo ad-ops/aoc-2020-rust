@@ -53,3 +53,6 @@ New puzzles can use the template of `bin/day0.rs` and change the solvers and tes
 
 ### Day 11
 - Very ugly and repetitive code. Need to refactor...
+
+### Day 12
+- Fun how much high school math that has been forgotten:-).
