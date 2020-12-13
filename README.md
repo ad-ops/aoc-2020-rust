@@ -56,3 +56,6 @@ New puzzles can use the template of `bin/day0.rs` and change the solvers and tes
 
 ### Day 12
 - Fun how much high school math that has been forgotten:-).
+
+### Day 13
+- Took some time before realizing the stepping could be simplyfied.
