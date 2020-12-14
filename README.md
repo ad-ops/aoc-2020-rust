@@ -59,3 +59,7 @@ New puzzles can use the template of `bin/day0.rs` and change the solvers and tes
 
 ### Day 13
 - Took some time before realizing the stepping could be simplyfied.
+
+### Day14
+- Need to become better at bit-manipulation and casting. This was the slowest problem (65ms) so far.
+- Still this problem got to use most lessons from previous days so that is good.
