@@ -65,3 +65,5 @@ New puzzles can use the template of `bin/day0.rs` and change the solvers and tes
 - Still this problem got to use most lessons from previous days so that is good.
 
 ### Day15
+- Took almost 5s to run part2. Refactored to use only a tuple instead of Vec in order to only store the 2 latest turns. Still takes almost 2s.
+- Got to learn how to get and modify HashMap values.

@@ -10,7 +10,18 @@ fn find_last_spoken_numbers(number: u32, previous_numbers: &HashMap<u32, Vec<u32
             if last_turn.is_some() && second_last_turn.is_some() {
                 return last_turn.unwrap() - second_last_turn.unwrap();
             }
+            0
+        }
+        None => 0
+    }
+}
 
+fn find_last_spoken_numbers_tuple(number: u32, previous_numbers: &HashMap<u32, (Option<u32>, Option<u32>)>) -> u32 {
+    match previous_numbers.get(&number) {
+        Some((second_last_turn, last_turn)) => {
+            if last_turn.is_some() && second_last_turn.is_some() {
+                return last_turn.unwrap() - second_last_turn.unwrap();
+            }
             0
         }
         None => 0
@@ -47,18 +58,20 @@ fn solver_part2(input: Vec<String>) -> String {
         .filter_map(|n| n.parse::<u32>().ok())
         .collect();
 
-    let mut previous_numbers: HashMap<u32, Vec<u32>> = HashMap::new();
+    let mut previous_numbers: HashMap<u32, (Option<u32>, Option<u32>)> = HashMap::new();
     for (turn, number) in input.iter().enumerate() {
-        previous_numbers.insert(*number, vec![turn as u32 + 1]);
+        previous_numbers.insert(*number, (None, Some(turn as u32 + 1)));
     }
     let mut turn: u32 = previous_numbers.len() as u32 + 1;
-    let mut number = find_last_spoken_numbers(*input.iter().last().expect("empty input"), &previous_numbers);
+    let mut number = find_last_spoken_numbers_tuple(*input.iter().last().expect("empty input"), &previous_numbers);
     while turn < 30000000 {
         previous_numbers
             .entry(number)
-            .and_modify(|turns| turns.push(turn))
-            .or_insert(vec![turn]);
-        number = find_last_spoken_numbers(number, &previous_numbers);
+            .and_modify(|previous_turns| {
+                *previous_turns = (previous_turns.1, Some(turn));
+            })
+            .or_insert((None, Some(turn)));
+        number = find_last_spoken_numbers_tuple(number, &previous_numbers);
         turn += 1;
     }
     let solution = number;
@@ -94,6 +107,29 @@ mod test {
         previous_numbers.insert(2, vec![1,4,5]);
         previous_numbers.insert(3, vec![5]);
         assert_eq!(find_last_spoken_numbers(2, &previous_numbers), 1);
+    }
+
+    #[test]
+    fn find_last_spoken_numbers_tuple_no_previous_number() {
+        let mut previous_numbers = HashMap::new();
+        previous_numbers.insert(2, (Some(4), Some(5)));
+        assert_eq!(find_last_spoken_numbers_tuple(1, &previous_numbers), 0);
+    }
+
+    #[test]
+    fn find_last_spoken_numbers_tuple_too_few_previous_numbers() {
+        let mut previous_numbers = HashMap::new();
+        previous_numbers.insert(2, (Some(4), Some(5)));
+        previous_numbers.insert(3, (None, Some(5)));
+        assert_eq!(find_last_spoken_numbers_tuple(3, &previous_numbers), 0);
+    }
+
+    #[test]
+    fn find_last_spoken_numbers_tuple_found_previous_numbers() {
+        let mut previous_numbers = HashMap::new();
+        previous_numbers.insert(2, (Some(4), Some(5)));
+        previous_numbers.insert(3, (None, Some(5)));
+        assert_eq!(find_last_spoken_numbers_tuple(2, &previous_numbers), 1);
     }
 
     #[test]
